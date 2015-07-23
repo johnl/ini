@@ -179,3 +179,19 @@ func Test_NameGetter(t *testing.T) {
 		So(tg.PackageName, ShouldEqual, "ini")
 	})
 }
+
+const _CONF_WITH_DOTS = `
+[namewithoutdots]
+NAME = "Jim"
+[name.with.dots]
+NAME = "John"
+`
+func Test_NameWithDots(t *testing.T) {
+	Convey("Map section with name with dots to struct", t, func() {
+		cfg, err := Load([]byte(_CONF_WITH_DOTS))
+		So(err, ShouldBeNil)
+		So(cfg, ShouldNotBeNil)
+		So(cfg.Section("namewithoutdots").MapTo(&testStruct{}), ShouldBeNil)
+		So(cfg.Section("name.with.dots").MapTo(&testStruct{}), ShouldBeNil)
+	})
+}
